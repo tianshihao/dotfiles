@@ -1,0 +1,46 @@
+{
+  "configurations": [
+    {
+      "name": "fish",
+      "enable": true,
+      "platform": {
+        "Windows": {
+          "source": "fish",
+          "target": "",
+          "enable": false
+        },
+        "Linux": {
+          "source": "fish",
+          "target": "~/.config",
+          "enable": true
+        },
+        "Darwin": {
+          "source": "fish",
+          "target": "~/.config",
+          "enable": true
+        }
+      }
+    },
+    {
+      "name": "kitty",
+      "enable": false,
+      "platform": {
+        "Windows": {
+          "source": "kitty",
+          "target": "",
+          "enable": false
+        },
+        "Linux": {
+          "source": "kitty",
+          "target": "~/.config",
+          "enable": false
+        },
+        "Darwin": {
+          "source": "kitty",
+          "target": "~/.config",
+          "enable": false
+        }
+      }
+    }
+  ]
+}
