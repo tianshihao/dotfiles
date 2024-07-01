@@ -56,7 +56,26 @@ class ConfigManager:
                     shutil.copy(config.source, config.target)
 
     def retrieve_from_host(self) -> None:
-        print("todo: retrieve_from_host")
+        for config in self.configs:
+            if config.enable:
+                # Ensure the source directory exists (where we're copying back to)
+                source_dir = os.path.dirname(config.source)
+                os.makedirs(source_dir, exist_ok=True)
+
+                # Check if the target exists and is a directory or a file
+                if os.path.exists(config.target):
+                    # If it's a directory, use shutil.copytree, else use shutil.copy
+                    if os.path.isdir(config.target):
+                        # If the source directory already exists, remove it first
+                        if os.path.exists(config.source):
+                            shutil.rmtree(config.source)
+                        shutil.copytree(config.target, config.source)
+                    else:
+                        # If it's a file, simply copy it back
+                        shutil.copy(config.target, config.source)
+                else:
+                    print(
+                        f"Warning: Target {config.target} does not exist. Skipping.")
 
     def sync(self) -> None:
         print("todo: sync")
