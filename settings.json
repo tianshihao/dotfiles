@@ -41,6 +41,27 @@
           "enable": false
         }
       }
+    },
+    {
+      "name": "vim",
+      "enable": true,
+      "platform": {
+        "Windows": {
+          "source": ".vimrc",
+          "target": "",
+          "enable": false
+        },
+        "Linux": {
+          "source": ".vimrc",
+          "target": "~",
+          "enable": true
+        },
+        "Darwin": {
+          "source": ".vimrc",
+          "target": "~",
+          "enable": true
+        }
+      }
     }
   ]
 }
