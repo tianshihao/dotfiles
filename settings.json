@@ -23,7 +23,7 @@
     },
     {
       "name": "kitty",
-      "enable": false,
+      "enable": true,
       "platform": {
         "Windows": {
           "source": "kitty",
@@ -33,12 +33,12 @@
         "Linux": {
           "source": "kitty",
           "target": "~/.config",
-          "enable": false
+          "enable": true
         },
         "Darwin": {
           "source": "kitty",
           "target": "~/.config",
-          "enable": false
+          "enable": true
         }
       }
     },
