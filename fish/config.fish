@@ -79,7 +79,7 @@ end
 # Check if the platform is macOS
 if string match -q "Darwin" (uname)
     # Add directories to PATH for macOS
-    set -Ux PATH /usr/local/bin /System/Cryptexes/App/usr/bin /usr/bin /bin /usr/sbin /opt/homebrew/bin $PATH
+    set -gx PATH /usr/local/bin /System/Cryptexes/App/usr/bin /usr/bin /bin /usr/sbin /opt/homebrew/bin $PATH
 else
     # Add directories to PATH for other platforms
 end
