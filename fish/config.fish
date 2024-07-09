@@ -76,10 +76,14 @@ function rename-branch
     end
 end
 
-# Check if the platform is macOS
-if string match -q "Darwin" (uname)
-    # Add directories to PATH for macOS
-    set -gx PATH /usr/local/bin /System/Cryptexes/App/usr/bin /usr/bin /bin /usr/sbin /opt/homebrew/bin $PATH
-else
-    # Add directories to PATH for other platforms
+function rebase-current-branch-to
+    set -l current_branch (git symbolic-ref --short HEAD)
+    set -l target_branch $argv[1]
+    if test -n "$target_branch"
+        git rebase $target_branch $current_branch
+        echo "Rebased $current_branch onto $target_branch"
+    else
+        echo "Please provide a target branch name"
+    end
 end
+abbr --add rcbt rebase-current-branch-to
