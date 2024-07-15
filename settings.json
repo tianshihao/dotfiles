@@ -40,23 +40,19 @@
       }
     },
     {
-      "name": "vim",
+      "name": "lazygit",
       "enable": true,
+      "source": "lazygit",
+      "target": "~/.config",
+      "excludes": [
+        "state.yml"
+      ],
       "platform": {
         "Windows": {
-          "source": ".vimrc",
-          "target": "",
           "enable": false
         },
-        "Linux": {
-          "source": ".vimrc",
-          "target": "~",
-          "enable": true
-        },
         "Darwin": {
-          "source": ".vimrc",
-          "target": "~",
-          "enable": true
+          "target": "~/Library/Application Support"
         }
       }
     }
