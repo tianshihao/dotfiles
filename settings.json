@@ -3,42 +3,39 @@
     {
       "name": "fish",
       "enable": true,
+      "source": "fish",
+      "target": "~/.config",
+      "excludes": [
+        "fish_history",
+        "fish_variables"
+      ],
       "platform": {
         "Windows": {
-          "source": "fish",
-          "target": "",
           "enable": false
         },
-        "Linux": {
-          "source": "fish",
-          "target": "~/.config",
-          "enable": true
-        },
-        "Darwin": {
-          "source": "fish",
-          "target": "~/.config",
-          "enable": true
-        }
+        "Linux": {},
+        "Darwin": {}
       }
     },
     {
       "name": "kitty",
       "enable": true,
+      "source": "kitty",
+      "target": "~/.config",
       "platform": {
         "Windows": {
-          "source": "kitty",
-          "target": "",
           "enable": false
-        },
-        "Linux": {
-          "source": "kitty",
-          "target": "~/.config",
-          "enable": true
-        },
-        "Darwin": {
-          "source": "kitty",
-          "target": "~/.config",
-          "enable": true
+        }
+      }
+    },
+    {
+      "name": "vim",
+      "enable": true,
+      "source": ".vimrc",
+      "target": "~",
+      "platform": {
+        "Windows": {
+          "enable": false
         }
       }
     },

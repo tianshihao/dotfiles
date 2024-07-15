@@ -7,11 +7,12 @@ import shutil
 
 
 class SyncSetting:
-    def __init__(self, name: str, enable: bool, source: str, target: str) -> None:
+    def __init__(self, name: str, enable: bool, source: str, target: str, excludes: List[str]) -> None:
         self.name: str = name
         self.enable: bool = enable
         self.source: str = source
         self.target: str = target
+        self.excludes: List[str] = excludes
 
 
 class ConfigManager:
@@ -48,10 +49,10 @@ class ConfigManager:
 
                 # Ensure the target directory exists
                 os.makedirs(target_dir, exist_ok=True)
-
-                # Copy the source to the target's directory
+                ignore_func = make_ignore_function(config.excludes)
                 if os.path.isdir(config.source):
-                    shutil.copytree(config.source, config.target)
+                    shutil.copytree(
+                        config.source, config.target, ignore=ignore_func)
                 else:
                     shutil.copy(config.source, config.target)
 
@@ -61,6 +62,7 @@ class ConfigManager:
                 # Ensure the source directory exists (where we're copying back to)
                 source_dir = os.path.dirname(config.source)
                 os.makedirs(source_dir, exist_ok=True)
+                ignore_func = make_ignore_function(config.excludes)
 
                 # Check if the target exists and is a directory or a file
                 if os.path.exists(config.target):
@@ -69,7 +71,8 @@ class ConfigManager:
                         # If the source directory already exists, remove it first
                         if os.path.exists(config.source):
                             shutil.rmtree(config.source)
-                        shutil.copytree(config.target, config.source)
+                        shutil.copytree(
+                            config.target, config.source, ignore=ignore_func)
                     else:
                         # If it's a file, simply copy it back
                         shutil.copy(config.target, config.source)
@@ -95,14 +98,33 @@ class ConfigManager:
     def __parse_config(self) -> None:
         if self.settings is not None:
             for config in self.settings['configurations']:
-                platform = config['platform'][self.platform]
-                if platform['enable']:
-                    source_file = platform['source']
-                    source_path = os.path.join(os.getcwd(), source_file)
-                    target_path = os.path.join(os.path.expanduser(
-                        platform['target']), source_file)
+                # Default configuration
+                name = config['name']
+                enable = config['enable']
+                source = config['source']
+                target = config['target']
+                excludes = config.get('excludes', [])
+
+                # Platform specific overrides
+                platform_config = config.get(
+                    'platform', {}).get(self.platform, {})
+                enable = platform_config.get('enable', enable)
+                source = platform_config.get('source', source)
+                target = platform_config.get('target', target)
+                excludes = platform_config.get('excludes', excludes)
+
+                if enable:
+                    source_path = os.path.join(os.getcwd(), source)
+                    target_path = os.path.join(
+                        os.path.expanduser(target), source)
                     self.configs.append(SyncSetting(
-                        config['name'], platform['enable'], source_path, target_path))
+                        name, enable, source_path, target_path, excludes))
+
+
+def make_ignore_function(excludes):
+    def _ignore_function(directory, contents):
+        return [content for content in contents if content in excludes]
+    return _ignore_function
 
 
 def main() -> None:
