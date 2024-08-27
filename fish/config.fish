@@ -57,14 +57,6 @@ abbr --add gsts git stash save
 # nautilos
 abbr --add n. nautilus .
 
-# Vault
-function vph
-    git add .
-    git commit -m "vault update $(date +'%Y-%m-%d %H:%M')"
-    git push -u origin master
-    and echo "Vault updated"
-end
-
 function rename-branch
     set -l old_branch (git symbolic-ref --short HEAD)
     set -l new_branch $argv[1]
