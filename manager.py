@@ -4,6 +4,7 @@ import json
 import os
 import platform
 import shutil
+import filecmp
 
 
 class SyncSetting:
@@ -86,6 +87,32 @@ class ConfigManager:
     def merge(self) -> None:
         print("todo: merge")
 
+    def check(self) -> None:
+        for config in self.configs:
+            if config.enable:
+                ignore_list = config.excludes
+                if os.path.isdir(config.source) and os.path.isdir(config.target):
+                    comparison = filecmp.dircmp(config.source, config.target, ignore=ignore_list)
+                    if comparison.diff_files or comparison.left_only or comparison.right_only:
+                        print(f"Inconsistencies found in {config.name}:")
+                        if comparison.diff_files:
+                            print(f"  Different files: {comparison.diff_files}")
+                        if comparison.left_only:
+                            print(f"  Files only in source: {comparison.left_only}")
+                        if comparison.right_only:
+                            print(f"  Files only in target: {comparison.right_only}")
+                    else:
+                        print(f"{config.name} is consistent.")
+                elif os.path.isfile(config.source) and os.path.isfile(config.target):
+                    if not filecmp.cmp(config.source, config.target, shallow=False):
+                        print(f"Inconsistencies found in {config.name}:")
+                        print(f"  Source and target files differ.")
+                    else:
+                        print(f"{config.name} is consistent.")
+                else:
+                    print(f"Inconsistencies found in {config.name}:")
+                    print(f"  Source and target types differ (one is a file, the other is a directory).")
+
     def __load_settings(self) -> None:
         try:
             with open('settings.json', 'r') as file:
@@ -136,6 +163,8 @@ def main() -> None:
                         help='Retrieve configurations from the host')
     parser.add_argument('--merge', action='store_true',
                         help='Merge configurations between host and repository')
+    parser.add_argument('--check', action='store_true',
+                        help='Check consistency between host and repository')
 
     args = parser.parse_args()
 
@@ -147,6 +176,8 @@ def main() -> None:
         config_manager.retrieve_from_host()
     elif args.merge:
         config_manager.merge()
+    elif args.check:
+        config_manager.check()
     else:
         print("No valid operation specified. Use --help for more information.")
 
