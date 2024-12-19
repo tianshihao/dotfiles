@@ -55,6 +55,23 @@
           "target": "~/Library/Application Support"
         }
       }
+    },
+    {
+      "name": "karabiner",
+      "enable": true,
+      "source": "karabiner",
+      "target": "~/.config",
+      "excludes": [
+        ".DS_Store"
+      ],
+      "platform": {
+        "Windows": {
+          "enable": false
+        },
+				"Linux": {
+          "enable": false
+        }
+      }
     }
   ]
 }
