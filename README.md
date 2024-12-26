@@ -80,3 +80,12 @@ The `settings.json` file contains the configurations to be synchronized. Each co
 ```
 
 Ensure the `enable` flag is set to `true` for each platform you wish to synchronize configurations for.
+
+### Commitizen
+
+```bash
+sudo apt install -y node
+sudo apt install -y npm
+npm install -g commitizen
+commitizen init cz-emoji-conventional --save-dev --save-exact --force
+```
