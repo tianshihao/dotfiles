@@ -1,3 +1,5 @@
+# ~/.config/fish/config.fish
+
 function fish_greeting
    echo Welcome back friend!
    echo The time is (set_color yellow; date +%T; set_color normal) and this machine is called $hostname
@@ -30,6 +32,7 @@ abbr --add gcpa git cherry-pick --abort
 abbr --add gcpc git cherry-pick --continue
 abbr --add gcz git cz
 abbr --add gl git log
+abbr --add glo git log --oneline
 abbr --add gpl git pull
 abbr --add gplr git pull -r
 abbr --add gpof git push origin --force
@@ -56,6 +59,9 @@ abbr --add gsts git stash save
 
 # nautilos
 abbr --add n. nautilus .
+
+# yazi
+abbr --add y yazi
 
 function rename-branch
     set -l old_branch (git symbolic-ref --short HEAD)
