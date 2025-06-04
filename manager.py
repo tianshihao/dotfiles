@@ -4,182 +4,216 @@ import json
 import os
 import platform
 import shutil
-import filecmp
+import sys
+import logging
 
 
-class SyncSetting:
-    def __init__(self, name: str, enable: bool, source: str, target: str, excludes: List[str]) -> None:
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)-7s %(filename)s:%(lineno)d %(message)s'
+)
+
+
+class Application:
+    def __init__(self, name: str, configurations: List['Configuration']) -> None:
         self.name: str = name
-        self.enable: bool = enable
-        self.source: str = source
-        self.target: str = target
-        self.excludes: List[str] = excludes
+        self.configurations: List['Configuration'] = configurations
 
 
-class ConfigManager:
+class Configuration:
+    def __init__(self, type: str, path_on_host: str, path_in_repo: str, excludes: Optional[List[str]] = None) -> None:
+        self.type: str = type
+        self.path_on_host: str = path_on_host
+        self.path_in_repo: str = path_in_repo
+        self.excludes: List[str] = excludes if excludes is not None else []
+
+
+class Manager:
     _instance = None
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
-            cls._instance = super(ConfigManager, cls).__new__(cls)
+            cls._instance = super(Manager, cls).__new__(cls)
         return cls._instance
 
     def __init__(self) -> None:
         if not hasattr(self, 'initialized'):  # Prevents re-initialization
-            self.settings: Optional[Dict[str, Any]] = self.__load_settings()
+            self.settings: Dict[str, Any] = self._load_settings()
             self.platform: str = platform.system()
-            self.configs: List[SyncSetting] = []
-            self.__parse_config()
+            self.applications: List[Application] = []
+
+            self._parse_settings()
+
             self.initialized = True  # Mark as initialized
 
-    def get_platform(self) -> str:
-        return self.platform
+    def retrieve_from_host(self) -> None:
+        self._filter()
+        self._copy('path_on_host', 'path_in_repo', 'Retrieving')
 
     def dispatch_to_host(self) -> None:
-        for config in self.configs:
-            if config.enable:
-                # Determine the target directory
-                target_dir = os.path.dirname(config.target)
+        self._copy('path_in_repo', 'path_on_host', 'Dispatching')
 
-                # Remove the existing target, whether it's a file or directory
-                if os.path.exists(config.target):
-                    if os.path.isdir(config.target):
-                        shutil.rmtree(config.target)
-                    else:
-                        os.remove(config.target)
+    def _copy(self, src_attr: str, dst_attr: str, action_desc: str) -> None:
+        total_applications = len(self.applications)
+        total_configurations = sum(len(app.configurations)
+                                   for app in self.applications)
+        logging.info(
+            f"{action_desc}: {total_applications} applications, {total_configurations} configurations to process.")
 
-                # Ensure the target directory exists
-                os.makedirs(target_dir, exist_ok=True)
-                ignore_func = make_ignore_function(config.excludes)
-                if os.path.isdir(config.source):
+        copied_config_count = 0
+        app_index = 0
+        for application in self.applications:
+            app_index += 1
+            for idx, configuration in enumerate(application.configurations, 1):
+                copied_config_count += 1
+                src = getattr(configuration, src_attr)
+                dst = getattr(configuration, dst_attr)
+                excludes = list(configuration.excludes or [])
+                logging.info(
+                    f"[{copied_config_count}/{total_configurations}] {action_desc} {configuration.type} '{src}' <-> '{dst}' for application '{application.name}'"
+                )
+                if configuration.type == 'directory':
                     shutil.copytree(
-                        config.source, config.target, ignore=ignore_func)
+                        src, dst,
+                        ignore=self._make_ignore_function(excludes),
+                        dirs_exist_ok=True
+                    )
+                elif configuration.type == 'file':
+                    os.makedirs(os.path.dirname(dst), exist_ok=True)
+                    shutil.copy2(src, dst)
                 else:
-                    shutil.copy(config.source, config.target)
+                    logging.error(
+                        f"Unknown configuration type '{configuration.type}' for '{src}'")
+        logging.info(
+            f"{action_desc} finished: {total_applications} applications, {copied_config_count} configurations processed.")
 
-    def retrieve_from_host(self) -> None:
-        for config in self.configs:
-            if config.enable:
-                # Ensure the source directory exists (where we're copying back to)
-                source_dir = os.path.dirname(config.source)
-                os.makedirs(source_dir, exist_ok=True)
-                ignore_func = make_ignore_function(config.excludes)
-
-                # Check if the target exists and is a directory or a file
-                if os.path.exists(config.target):
-                    # If it's a directory, use shutil.copytree, else use shutil.copy
-                    if os.path.isdir(config.target):
-                        # If the source directory already exists, remove it first
-                        if os.path.exists(config.source):
-                            shutil.rmtree(config.source)
-                        shutil.copytree(
-                            config.target, config.source, ignore=ignore_func)
-                    else:
-                        # If it's a file, simply copy it back
-                        shutil.copy(config.target, config.source)
-                else:
-                    print(
-                        f"Warning: Target {config.target} does not exist. Skipping.")
-
-    def sync(self) -> None:
-        print("todo: sync")
-
-    def merge(self) -> None:
-        print("todo: merge")
-
-    def check(self) -> None:
-        for config in self.configs:
-            if config.enable:
-                ignore_list = config.excludes
-                if os.path.isdir(config.source) and os.path.isdir(config.target):
-                    comparison = filecmp.dircmp(config.source, config.target, ignore=ignore_list)
-                    if comparison.diff_files or comparison.left_only or comparison.right_only:
-                        print(f"Inconsistencies found in {config.name}:")
-                        if comparison.diff_files:
-                            print(f"  Different files: {comparison.diff_files}")
-                        if comparison.left_only:
-                            print(f"  Files only in source: {comparison.left_only}")
-                        if comparison.right_only:
-                            print(f"  Files only in target: {comparison.right_only}")
-                    else:
-                        print(f"{config.name} is consistent.")
-                elif os.path.isfile(config.source) and os.path.isfile(config.target):
-                    if not filecmp.cmp(config.source, config.target, shallow=False):
-                        print(f"Inconsistencies found in {config.name}:")
-                        print(f"  Source and target files differ.")
-                    else:
-                        print(f"{config.name} is consistent.")
-                else:
-                    print(f"Inconsistencies found in {config.name}:")
-                    print(f"  Source and target types differ (one is a file, the other is a directory).")
-
-    def __load_settings(self) -> None:
+    def _load_settings(self) -> dict:
         try:
             with open('settings.json', 'r') as file:
-                return json.load(file)
+                data = json.load(file)
+                if not isinstance(data, dict) or not data:
+                    logging.error(
+                        "settings.json is empty or not a valid dict.")
+                    exit(1)
+                return data
         except json.JSONDecodeError as e:
-            print(f"Error parsing JSON: {e}")
+            logging.error(
+                "Error parsing settings.json", exc_info=True)
+            exit(1)
         except FileNotFoundError as e:
-            print(f"Configuration file not found: {e}")
+            logging.error(
+                "settings.json not found", exc_info=True)
+            exit(1)
 
-    def __parse_config(self) -> None:
-        if self.settings is not None:
-            for config in self.settings['configurations']:
-                # Default configuration
-                name = config['name']
-                enable = config['enable']
-                source = config['source']
-                target = config['target']
-                excludes = config.get('excludes', [])
+    def _parse_settings(self) -> None:
+        for application in self.settings['applications']:
+            if self._get_platform_value(application, 'enable', self.platform):
+                name = application['name']
+                configurations = self._get_platform_value(
+                    application, 'configurations', self.platform, default=[])
 
-                # Platform specific overrides
-                platform_config = config.get(
-                    'platform', {}).get(self.platform, {})
-                enable = platform_config.get('enable', enable)
-                source = platform_config.get('source', source)
-                target = platform_config.get('target', target)
-                excludes = platform_config.get('excludes', excludes)
+                parsed_configuration = []
+                for configuration in configurations:
+                    if self._get_platform_value(configuration, 'enable', self.platform, True):
+                        type = configuration["type"]
+                        path_on_host = self._get_absolute_path(self._get_platform_value(
+                            configuration, 'path_on_host', self.platform))
+                        path_in_repo = self._get_absolute_path(self._get_platform_value(
+                            configuration, 'path_in_repo', self.platform))
+                        excludes = self._get_platform_value(
+                            configuration, 'excludes', self.platform)
 
-                if enable:
-                    source_path = os.path.join(os.getcwd(), source)
-                    target_path = os.path.join(
-                        os.path.expanduser(target), source)
-                    self.configs.append(SyncSetting(
-                        name, enable, source_path, target_path, excludes))
+                        parsed_configuration.append(Configuration(
+                            type=type,
+                            path_on_host=path_on_host,
+                            path_in_repo=path_in_repo,
+                            excludes=excludes
+                        ))
 
+                self.applications.append(Application(
+                    name=name,
+                    configurations=parsed_configuration
+                ))
 
-def make_ignore_function(excludes):
-    def _ignore_function(directory, contents):
-        return [content for content in contents if content in excludes]
-    return _ignore_function
+        logging.info(
+            f"Loaded {len(self.applications)} applications, {sum(len(app.configurations) for app in self.applications)} configurations from settings."
+        )
+
+    def _filter(self) -> None:
+        total_configs = sum(len(app.configurations)
+                            for app in self.applications)
+        skipped_configs = 0
+        for application in self.applications:
+            to_remove = []
+            for configuration in application.configurations:
+                if not os.path.isdir(configuration.path_on_host) and not os.path.isfile(configuration.path_on_host):
+                    logging.warning(
+                        f"Application '{application.name}' has a configuration path '{configuration.path_on_host}' that does not exist on the host, skipping.")
+                    to_remove.append(configuration)
+                    skipped_configs += 1
+                    continue
+
+            for invalid in to_remove:
+                application.configurations.remove(invalid)
+        to_remove = None
+
+        self.applications = [
+            app for app in self.applications if app.configurations]
+
+        remaining_configs = sum(len(app.configurations)
+                                for app in self.applications)
+        if self.applications:
+            logging.info(
+                f"Processed configurations for {len(self.applications)} applications. "
+                f"Remaining: {remaining_configs} configurations, Skipped: {skipped_configs} of {total_configs}."
+            )
+        else:
+            logging.warning(
+                "No valid applications found after processing configurations, exiting.")
+            sys.exit(0)
+
+    def _get_platform_value(self, obj: dict, key: str, platform: str, default=None) -> Any:
+        platform = platform.lower()
+        if platform in obj and key in obj[platform]:
+            return obj[platform][key]
+        return obj.get(key, default)
+
+    def _get_absolute_path(self, path: str) -> str:
+        # Expand '~' if present
+        if path.startswith('~'):
+            path = os.path.expanduser(path)
+        # Normalize path separators
+        norm_path = os.path.normpath(path)
+        # If already absolute, return as absolute
+        if os.path.isabs(norm_path):
+            return os.path.abspath(norm_path)
+        # Otherwise, join with current working directory
+        return os.path.abspath(os.path.join(os.getcwd(), norm_path))
+
+    def _make_ignore_function(self, excludes: List[str]):
+        def ignore_func(directory, items):
+            return [item for item in items if item in excludes]
+        return ignore_func
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
         description='Manage configuration synchronization.')
-    parser.add_argument('--dispatch', action='store_true',
-                        help='Dispatch configurations to the host')
     parser.add_argument('--retrieve', action='store_true',
                         help='Retrieve configurations from the host')
-    parser.add_argument('--merge', action='store_true',
-                        help='Merge configurations between host and repository')
-    parser.add_argument('--check', action='store_true',
-                        help='Check consistency between host and repository')
+    parser.add_argument('--dispatch', action='store_true',
+                        help='Dispatch configurations to the host')
 
     args = parser.parse_args()
 
-    config_manager = ConfigManager()
+    manager = Manager()
 
     if args.dispatch:
-        config_manager.dispatch_to_host()
+        manager.dispatch_to_host()
     elif args.retrieve:
-        config_manager.retrieve_from_host()
-    elif args.merge:
-        config_manager.merge()
-    elif args.check:
-        config_manager.check()
+        manager.retrieve_from_host()
     else:
-        print("No valid operation specified. Use --help for more information.")
+        sys.exit(0)
 
 
 if __name__ == '__main__':

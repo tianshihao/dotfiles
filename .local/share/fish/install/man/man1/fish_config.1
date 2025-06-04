@@ -1,0 +1,139 @@
+.\" Man page generated from reStructuredText.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "FISH_CONFIG" "1" "Apr 20, 2025" "4.0" "fish-shell"
+.SH NAME
+fish_config \- start the web-based configuration interface
+.SH SYNOPSIS
+.nf
+\fBfish_config\fP [\fBbrowse\fP]
+\fBfish_config\fP \fBprompt\fP (\fBchoose\fP | \fBlist\fP | \fBsave\fP | \fBshow\fP)
+\fBfish_config\fP \fBtheme\fP (\fBchoose\fP | \fBdemo\fP | \fBdump\fP | \fBlist\fP | \fBsave\fP | \fBshow\fP)
+.fi
+.sp
+.SH DESCRIPTION
+.sp
+\fBfish_config\fP is used to configure fish.
+.sp
+Without arguments or with the \fBbrowse\fP command it starts the web\-based configuration interface. The web interface allows you to view your functions, variables and history, and to make changes to your prompt and color configuration. It starts a local web server and opens a browser window. When you are finished, close the browser window and press the Enter key to terminate the configuration session.
+.sp
+If the \fBBROWSER\fP environment variable is set, it will be used as the name of the web browser to open instead of the system default.
+.sp
+With the \fBprompt\fP command \fBfish_config\fP can be used to view and choose a prompt from fish\(aqs sample prompts inside the terminal directly.
+.sp
+Available subcommands for the \fBprompt\fP command:
+.INDENT 0.0
+.IP \(bu 2
+\fBchoose\fP loads a sample prompt in the current session.
+.IP \(bu 2
+\fBlist\fP lists the names of the available sample prompts.
+.IP \(bu 2
+\fBsave\fP saves the current prompt to a file (via \fI\%funcsave\fP).
+.IP \(bu 2
+\fBshow\fP shows what the given sample prompts (or all) would look like.
+.UNINDENT
+.sp
+With the \fBtheme\fP command \fBfish_config\fP can be used to view and choose a theme (meaning a color scheme) inside the terminal.
+.sp
+Available subcommands for the \fBtheme\fP command:
+.INDENT 0.0
+.IP \(bu 2
+\fBchoose\fP loads a sample theme in the current session.
+.IP \(bu 2
+\fBdemo\fP displays some sample text in the current theme.
+.IP \(bu 2
+\fBdump\fP prints the current theme in a loadable format.
+.IP \(bu 2
+\fBlist\fP lists the names of the available sample themes.
+.IP \(bu 2
+\fBsave\fP saves the given theme to \fI\%universal variables\fP\&.
+.IP \(bu 2
+\fBshow\fP shows what the given sample theme (or all) would look like.
+.UNINDENT
+.sp
+The \fB\-h\fP or \fB\-\-help\fP option displays help about using this command.
+.SH THEME FILES
+.sp
+\fBfish_config theme\fP and the theme selector in the web config tool load their themes from theme files. These are stored in the fish configuration directory, typically \fB~/.config/fish/themes\fP, with a .theme ending.
+.sp
+You can add your own theme by adding a file in that directory.
+.sp
+To get started quickly:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+fish_config theme dump > ~/.config/fish/themes/my.theme
+.EE
+.UNINDENT
+.UNINDENT
+.sp
+which will save your current theme in .theme format.
+.sp
+The format looks like this:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+# name: \(aqCool Beans\(aq
+# preferred_background: black
+
+fish_color_autosuggestion 666
+fish_color_cancel \-r
+fish_color_command normal
+fish_color_comment \(aq888\(aq  \(aq\-\-italics\(aq
+fish_color_cwd 0A0
+fish_color_cwd_root A00
+fish_color_end 009900
+.EE
+.UNINDENT
+.UNINDENT
+.sp
+The two comments at the beginning are the name and background that the web config tool shows.
+.sp
+The other lines are just like \fBset variable value\fP, except that no expansions are allowed. Quotes are, but aren\(aqt necessary.
+.sp
+Any color variable fish knows about that the theme doesn\(aqt set will be set to empty when it is loaded, so the old theme is completely overwritten.
+.sp
+Other than that, .theme files can contain any variable with a name that matches the regular expression \fB\(aq^fish_(?:pager_)?color.*$\(aq\fP \- starts with \fBfish_\fP, an optional \fBpager_\fP, then \fBcolor\fP and then anything.
+.SH EXAMPLE
+.sp
+\fBfish_config\fP or \fBfish_config browse\fP opens a new web browser window and allows you to configure certain fish settings.
+.sp
+\fBfish_config prompt show\fP demos the available sample prompts.
+.sp
+\fBfish_config prompt choose disco\fP makes the disco prompt the prompt for the current session. This can also be used in \fI\%config.fish\fP to set the prompt.
+.sp
+\fBfish_config prompt save\fP saves the current prompt to an \fI\%autoloaded\fP file.
+.sp
+\fBfish_config prompt save default\fP chooses the default prompt and saves it.
+.SH COPYRIGHT
+2024, fish-shell developers
+.\" Generated by docutils manpage writer.
+.

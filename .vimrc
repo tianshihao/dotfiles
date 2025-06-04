@@ -97,3 +97,5 @@ endfunction
 nnoremap <LEADER>tb :call ToggleBoolean()<CR>
 
 runtim! ftplugin/man.vim
+
+set clipboard=unnamedplus

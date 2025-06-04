@@ -1,77 +1,116 @@
 {
-  "configurations": [
+  "applications": [
     {
       "name": "fish",
       "enable": true,
-      "source": "fish",
-      "target": "~/.config",
-      "excludes": [
-        "fish_history",
-        "fish_variables"
-      ],
-      "platform": {
-        "Windows": {
-          "enable": false
+      "configurations": [
+        {
+          "type": "directory",
+          "path_on_host": "~/.config/fish",
+          "path_in_repo": ".config/fish",
+          "excludes": [
+            "fish_variables"
+          ]
         },
-        "Linux": {},
-        "Darwin": {}
+        {
+          "type": "directory",
+          "path_on_host": "~/.local/share/fish",
+          "path_in_repo": ".local/share/fish"
+        }
+      ],
+      "windows": {
+        "enable": false
       }
     },
     {
       "name": "kitty",
       "enable": true,
-      "source": "kitty",
-      "target": "~/.config",
-      "platform": {
-        "Windows": {
-          "enable": false
+      "configurations": [
+        {
+          "type": "directory",
+          "path_on_host": "~/.config/kitty",
+          "path_in_repo": ".config/kitty"
         }
+      ],
+      "windows": {
+        "enable": false
       }
     },
     {
       "name": "vim",
       "enable": true,
-      "source": ".vimrc",
-      "target": "~",
-      "platform": {
-        "Windows": {
-          "enable": false
+      "configurations": [
+        {
+          "type": "file",
+          "path_on_host": "~/.vimrc",
+          "path_in_repo": ".vimrc",
+          "windows": {
+            "path_on_host": "~/_vimrc"
+          }
+        },
+        {
+          "type": "file",
+          "path_on_host": "~/.viminfo",
+          "path_in_repo": ".viminfo",
+          "windows": {
+            "enable": false
+          }
         }
-      }
+      ]
     },
     {
       "name": "lazygit",
       "enable": true,
-      "source": "lazygit",
-      "target": "~/.config",
-      "excludes": [
-        "state.yml"
-      ],
-      "platform": {
-        "Windows": {
-          "enable": false
-        },
-        "Darwin": {
-          "target": "~/Library/Application Support"
+      "configurations": [
+        {
+          "type": "directory",
+          "path_on_host": "~/.config/lazygit",
+          "path_in_repo": ".config/lazygit",
+          "excludes": [
+            "state.yml"
+          ],
+          "darwin": {
+            "path_on_host": "~/Library/Application Support/lazygit"
+          }
         }
+      ],
+      "windows": {
+        "enable": false
       }
     },
     {
       "name": "karabiner",
       "enable": true,
-      "source": "karabiner",
-      "target": "~/.config",
-      "excludes": [
-        ".DS_Store"
-      ],
-      "platform": {
-        "Windows": {
-          "enable": false
-        },
-				"Linux": {
-          "enable": false
+      "configurations": [
+        {
+          "type": "directory",
+          "path_on_host": "~/.config/karabiner",
+          "path_in_repo": ".config/karabiner",
+          "excludes": [
+            ".DS_Store"
+          ]
         }
+      ],
+      "windows": {
+        "enable": false
+      },
+      "linux": {
+        "enable": false
       }
+    },
+    {
+      "name": "test",
+      "enable": true,
+      "configurations": [
+        {
+          "type": "directory",
+          "path_on_host": "~/.config/test",
+          "path_in_repo": ".config/test",
+          "excludes": [
+            "skip.txt"
+          ]
+        }
+      ]
     }
   ]
 }
