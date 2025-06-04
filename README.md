@@ -1,91 +1,159 @@
-# Configuration Sync Manager
+# Dotfiles Manager
 
 ## Introduction
 
-The Configuration Sync Manager is a Python utility designed to synchronize configuration files across different environments. It supports conditional synchronization based on the operating system, allowing users to maintain consistent settings across Windows, Linux, and macOS. The tool reads configurations from a `settings.json` file, which specifies the source and target directories for each configuration, as well as whether the synchronization should be enabled for each platform.
+Dotfiles Manager is a Python tool for synchronizing configuration files (dotfiles) across Linux, macOS, and Windows.  
+All sync rules are managed in a single `settings.json` file, allowing flexible specification of which configs to sync, platform-specific paths, and files to exclude.  
+This makes it easy to quickly restore a development or work environment on any new machine.
 
-## Usage
+---
 
-### Setting Up
+## Quick Start
 
-1. Ensure Python is installed on your system.
-2. Place your configuration settings in the `settings.json` file following the provided structure.
+1. **Prepare the environment**
 
-### Running the Tool
+   - Requires Python 3.
+   - Clone this repo and edit `settings.json` as needed.
 
-To use the Configuration Sync Manager, navigate to the directory containing `manager.py` and run one of the following commands in your terminal:
+2. **Sync configs to the machine (from repo to system)**
 
-- **Dispatch Configurations to Host:**
+   ```bash
+   python3 manager.py --dispatch
+   ```
 
-  ```bash
-  python3 manager.py --dispatch
-  ```
+3. **Collect configs from the machine (from system to repo)**
 
-  This command copies the specified configurations to their target locations on the host machine.
+   ```bash
+   python3 manager.py --retrieve
+   ```
 
-- **Retrieve Configurations from Host:**
+4. **Show help**
+   ```bash
+   python3 manager.py --help
+   ```
 
-  ```bash
-  python3 manager.py --retrieve
-  ```
+---
 
-  _(Functionality to be implemented)_ This command would retrieve configurations from the host machine back to the source directory.
+## Configuration File (`settings.json`)
 
-- **Merge Configurations:**
+Each application can have multiple configuration items.  
+Each item can specify type (`file` or `directory`), host path, repo path, excludes, and platform-specific settings.
 
-  ```bash
-  python manager.py --merge
-  ```
-
-  _(Functionality to be implemented)_ This command would merge configurations between the host and the repository.
-
-- **Help:**
-
-  ```bash
-  python3 manager.py --help
-  ```
-
-  This command displays the available options and usage instructions.
-
-### Configuration File (`settings.json`)
-
-The `settings.json` file contains the configurations to be synchronized. Each configuration specifies a name, whether it's enabled, and platform-specific settings including the source and target directories. Here's an example structure:
+**Example 1: Syncing a single file**
 
 ```json
 {
-  "configurations": [
+  "applications": [
     {
-      "name": "fish",
+      "name": "vim",
       "enable": true,
-      "platform": {
-        "Windows": {
-          "source": "fish",
-          "target": "",
-          "enable": false
-        },
-        "Linux": {
-          "source": "fish",
-          "target": "~/.config",
-          "enable": true
-        },
-        "Darwin": {
-          "source": "fish",
-          "target": "~/.config",
-          "enable": true
+      "configurations": [
+        {
+          "type": "file",
+          "path_on_host": "~/.vimrc",
+          "path_in_repo": ".vimrc",
+          "windows": {
+            "path_on_host": "~/_vimrc"
+          }
         }
-      }
+      ]
     }
   ]
 }
 ```
 
-Ensure the `enable` flag is set to `true` for each platform you wish to synchronize configurations for.
+**What happens on different platforms:**
 
-### Commitizen
+- **Linux/macOS**
+  - `dispatch`: Copies `.vimrc` from the repo to `~/.vimrc` on the system.
+  - `retrieve`: Copies `~/.vimrc` from the system to `.vimrc` in the repo.
+- **Windows**
+  - `dispatch`: Copies `.vimrc` from the repo to `~/_vimrc` on the system.
+  - `retrieve`: Copies `~/_vimrc` from the system to `.vimrc` in the repo.
+
+---
+
+**Example 2: Syncing a directory**
+
+```json
+{
+  "applications": [
+    {
+      "name": "kitty",
+      "enable": true,
+      "configurations": [
+        {
+          "type": "directory",
+          "path_on_host": "~/.config/kitty",
+          "path_in_repo": ".config/kitty",
+          "excludes": ["kitty.conf.bak"]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**What happens:**
+
+- **Linux/macOS**
+  - `dispatch`: Copies the entire `.config/kitty` directory from the repo to `~/.config/kitty` on the system, skipping any files listed in `excludes` (e.g., `kitty.conf.bak`).
+  - `retrieve`: Copies `~/.config/kitty` from the system to `.config/kitty` in the repo, skipping excluded files.
+- **Windows**
+  - Unless a `windows` override is specified, the same logic applies, but a different path or disabling sync for Windows can be set using the `windows` key.
+
+---
+
+- Platform keys use lowercase (e.g. `"windows"`, `"darwin"`, `"linux"`).
+- Use `excludes` to skip files or directories not to be synced.
+- Set `enable: false` to skip syncing on a specific platform.
+
+---
+
+## Commitizen Setup & Usage
+
+### What is Commitizen?
+
+Commitizen helps standardize git commit messages, which is useful for teams or for automating changelog generation.
+
+### How to set up
+
+#### 1. If Node.js and npm are not installed
+
+First, install Node.js and npm:
 
 ```bash
-sudo apt install -y node
-sudo apt install -y npm
-npm install -g commitizen
-commitizen init cz-emoji-conventional --save-dev --save-exact --force
+sudo apt update
+sudo apt install -y nodejs npm
 ```
+
+#### 2. If Node.js and npm are already installed
+
+In the dotfiles repo directory:
+
+```bash
+npm install --save-dev commitizen
+npx commitizen init cz-emoji-conventional --save-dev --save-exact --force
+```
+
+- Only add `package.json` and `package-lock.json` to git. **Do not commit `node_modules/`.**
+- Add to `.gitignore`:
+  ```
+  node_modules/
+  ```
+
+#### 3. How to use on a new machine
+
+1. Clone the dotfiles repo.
+2. Run:
+   ```bash
+   npm install
+   ```
+3. Use Commitizen to commit:
+   ```bash
+   npx cz
+   ```
+   or
+   ```bash
+   npx commitizen
+   ```
