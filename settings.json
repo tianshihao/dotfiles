@@ -23,6 +23,28 @@
       }
     },
     {
+      "name": "omf",
+      "enable": true,
+      "configurations": [
+        {
+          "type": "directory",
+          "path_on_host": "~/.config/omf",
+          "path_in_repo": ".config/omf",
+          "excludes": [
+            "fish_variables"
+          ]
+        },
+        {
+          "type": "directory",
+          "path_on_host": "~/.local/share/omf",
+          "path_in_repo": ".local/share/omf"
+        }
+      ],
+      "windows": {
+        "enable": false
+      }
+    },
+    {
       "name": "kitty",
       "enable": true,
       "configurations": [
