@@ -15,12 +15,12 @@
         {
           "type": "directory",
           "path_on_host": "~/.local/share/fish",
-          "path_in_repo": ".local/share/fish"
+          "path_in_repo": ".local/share/fish",
+          "windows": {
+            "enable": false
+          }
         }
-      ],
-      "windows": {
-        "enable": false
-      }
+      ]
     },
     {
       "name": "omf",
@@ -132,7 +132,10 @@
             "skip.txt"
           ]
         }
-      ]
+      ],
+      "windows": {
+        "enable": false
+      }
     }
   ]
 }
