@@ -2,7 +2,7 @@
   "applications": [
     {
       "name": "fish",
-      "enable": true,
+      "enable": false,
       "configurations": [
         {
           "type": "directory",
@@ -24,7 +24,7 @@
     },
     {
       "name": "omf",
-      "enable": true,
+      "enable": false,
       "configurations": [
         {
           "type": "directory",
@@ -46,7 +46,7 @@
     },
     {
       "name": "kitty",
-      "enable": true,
+      "enable": false,
       "configurations": [
         {
           "type": "directory",
@@ -82,7 +82,7 @@
     },
     {
       "name": "lazygit",
-      "enable": true,
+      "enable": false,
       "configurations": [
         {
           "type": "directory",
@@ -102,7 +102,7 @@
     },
     {
       "name": "karabiner",
-      "enable": true,
+      "enable": false,
       "configurations": [
         {
           "type": "directory",
