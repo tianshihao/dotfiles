@@ -1,4 +1,6 @@
+__pycache__
+.venv
 .vscode
+*.pyc
 node_modules
 package-lock.json
-package.json
