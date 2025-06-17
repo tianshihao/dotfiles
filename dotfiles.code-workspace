@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {},
+	"extensions": {
+		"recommendations": [
+			"albert.TabOut",
+			"christian-kohler.path-intellisense",
+			"eamodio.gitlens",
+			"GitHub.copilot-chat",
+			"GitHub.copilot",
+			"miguelsolorio.fluent-icons",
+			"ms-python.autopep8",
+			"ms-python.debugpy",
+			"ms-python.isort",
+			"ms-python.python",
+			"ms-python.vscode-pylance",
+			"PKief.material-icon-theme",
+			"sdras.night-owl",
+			"vscodevim.vim"
+		]
+	}
+}
