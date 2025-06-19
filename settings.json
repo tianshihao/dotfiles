@@ -136,6 +136,20 @@
       "windows": {
         "enable": false
       }
+    },
+    {
+      "name": "powershell",
+      "enable": false,
+      "windows": {
+        "enable": true
+      },
+      "configurations": [
+        {
+          "type": "file",
+          "path_on_host": "D:/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1",
+          "path_in_repo": "Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
+        }
+      ]
     }
   ]
 }
