@@ -2,44 +2,49 @@
 
 ## Introduction
 
-Dotfiles Manager is a Python tool for synchronizing configuration files (dotfiles) across Linux, macOS, and Windows.  
-All sync rules are managed in a single `settings.json` file, allowing flexible specification of which configs to sync, platform-specific paths, and files to exclude.  
-This makes it easy to quickly restore a development or work environment on any new machine.
+Dotfiles Manager is a Python tool for syncing your dotfiles across Linux, macOS, and Windows. All rules are in `settings.json`. You choose what to sync, set different paths for each system, and pick files to skip. This helps you set up your work or dev environment on any computer fast.
 
 ---
 
 ## Quick Start
 
-1. **Prepare the environment**
+1. **Get ready**
 
-   - Requires Python 3.
-   - Clone this repo and edit `settings.json` as needed.
+   - Needs Python 3.
+   - Clone this repo and edit `settings.json` as you like.
 
-2. **Sync configs to the machine (from repo to system)**
+2. **See what will be copied**
 
    ```bash
-   python3 manager.py --dispatch
+   python3 -m src.main --overview
    ```
 
-3. **Collect configs from the machine (from system to repo)**
+   Shows what will be copied, which items are enabled, and the paths for your system.
+
+3. **Copy files from your computer back to the repo**
 
    ```bash
-   python3 manager.py --retrieve
+   python3 -m src.main --retrieve
    ```
 
-4. **Show help**
+4. **Copy files from the repo to your computer**
+
    ```bash
-   python3 manager.py --help
+   python3 -m src.main --dispatch
+   ```
+
+5. **Show help**
+   ```bash
+   python3 -m src.main --help
    ```
 
 ---
 
-## Configuration File (`settings.json`)
+## settings.json
 
-Each application can have multiple configuration items.  
-Each item can specify type (`file` or `directory`), host path, repo path, excludes, and platform-specific settings.
+You list your programs in `settings.json`. Each program can have many items. Each item can be a file or a folder. You set where it is on your computer, where it is in the repo, what to skip, and special rules for each system.
 
-**Example 1: Syncing a single file**
+**Example 1: Copy one file**
 
 ```json
 {
@@ -62,18 +67,14 @@ Each item can specify type (`file` or `directory`), host path, repo path, exclud
 }
 ```
 
-**What happens on different platforms:**
+**What happens:**
 
-- **Linux/macOS**
-  - `dispatch`: Copies `.vimrc` from the repo to `~/.vimrc` on the system.
-  - `retrieve`: Copies `~/.vimrc` from the system to `.vimrc` in the repo.
-- **Windows**
-  - `dispatch`: Copies `.vimrc` from the repo to `~/_vimrc` on the system.
-  - `retrieve`: Copies `~/_vimrc` from the system to `.vimrc` in the repo.
+- On Linux or macOS: `.vimrc` is copied between the repo and `~/.vimrc`.
+- On Windows: `.vimrc` is copied between the repo and `~/_vimrc`.
 
 ---
 
-**Example 2: Syncing a directory**
+**Example 2: Copy a folder**
 
 ```json
 {
@@ -96,25 +97,20 @@ Each item can specify type (`file` or `directory`), host path, repo path, exclud
 
 **What happens:**
 
-- **Linux/macOS**
-  - `dispatch`: Copies the entire `.config/kitty` directory from the repo to `~/.config/kitty` on the system, skipping any files listed in `excludes` (e.g., `kitty.conf.bak`).
-  - `retrieve`: Copies `~/.config/kitty` from the system to `.config/kitty` in the repo, skipping excluded files.
-- **Windows**
-  - Unless a `windows` override is specified, the same logic applies, but a different path or disabling sync for Windows can be set using the `windows` key.
+- The whole `.config/kitty` folder is copied, skipping files in `excludes`.
+- You can set different rules for Windows, macOS, or Linux with the keys `windows`, `darwin`, `linux`.
 
 ---
 
-- Platform keys use lowercase (e.g. `"windows"`, `"darwin"`, `"linux"`).
-- Use `excludes` to skip files or directories not to be synced.
-- Set `enable: false` to skip syncing on a specific platform.
+- Use lowercase for system keys.
+- Use `excludes` to skip files or folders.
+- Set `enable: false` to skip a program or a system.
 
 ---
 
-## Commitizen Setup & Usage
+## Commitizen
 
-### What is Commitizen?
-
-Commitizen helps standardize git commit messages, which is useful for teams or for automating changelog generation.
+Commitizen helps you write git commit messages in a standard way. This is good for teams or making changelogs.
 
 ### How to set up
 
@@ -135,12 +131,6 @@ In the dotfiles repo directory:
 npm install --save-dev commitizen
 npx commitizen init cz-emoji-conventional --save-dev --save-exact --force
 ```
-
-- Only add `package.json` and `package-lock.json` to git. **Do not commit `node_modules/`.**
-- Add to `.gitignore`:
-  ```
-  node_modules/
-  ```
 
 #### 3. How to use on a new machine
 
