@@ -22,6 +22,8 @@ def main() -> None:
                         help='Dispatch configurations to the host')
     parser.add_argument('--settings', type=str, default='settings.json',
                         help='Path to the settings file (default: settings.json)')
+    parser.add_argument('--debug', action='store_true',
+                        help='Enable debug mode for detailed error output')
 
     args = parser.parse_args()
 
@@ -29,7 +31,9 @@ def main() -> None:
         manager: Manager = Manager(
             settings_path=get_absolute_path(args.settings))
     except Exception as e:
-        logging.error(f"Failed to initialize Manager: {e}", exc_info=True)
+        logging.error(f"Failed to initialize Manager: {e}")
+        if args.debug:
+            logging.error("Traceback:", exc_info=True)
         sys.exit(1)
 
     if args.validate:
