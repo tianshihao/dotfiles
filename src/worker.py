@@ -8,21 +8,20 @@ from .loader import Loader
 from .models import Configuration, JsonObject, Settings
 from .parser import Parser
 from .utils import make_ignore_function
-
-# from .validator import Validator
+from .validator import Validator
 
 
 class Worker:
     """Handle configuration synchronization tasks."""
 
     def __init__(self, settings_path: str, app_filter: list[str] | None = None) -> None:
-        loader: Loader = Loader()
-        # validator: Validator = Validator()
-        parser: Parser = Parser()
+        _loader: Loader = Loader()
+        _validator: Validator = Validator()
+        _parser: Parser = Parser()
 
-        json_obj: JsonObject = loader.load(settings_path)
-        # validator.validate(settings)
-        self._settings: Settings = parser.parse(json_obj)
+        _json_obj: JsonObject = _loader.load(settings_path)
+        _validator.validate(_json_obj)
+        self._settings: Settings = _parser.parse(_json_obj)
         self._app_filter: list[str] | None = app_filter
 
         self._action_map: dict[
