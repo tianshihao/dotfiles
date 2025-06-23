@@ -150,6 +150,23 @@
           "path_in_repo": "Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
         }
       ]
+    },
+    {
+      "name": "nvim",
+      "enable": true,
+      "configurations": [
+        {
+          "type": "directory",
+          "path_on_host": "~/.config/nvim",
+          "path_in_repo": ".config/nvim"
+        }
+      ],
+      "windows": {
+        "enable": false
+      },
+      "darwin": {
+        "enable": false
+      }
     }
   ]
 }
