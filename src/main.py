@@ -22,12 +22,15 @@ def main() -> None:
                         help='Dispatch configurations to the host')
     parser.add_argument('--settings', type=str, default='settings.json',
                         help='Path to the settings file (default: settings.json)')
+    parser.add_argument('--app', type=str, nargs='+', default=None,
+                        help='Only operate on the specified application(s) (by name, space separated)')
 
     args = parser.parse_args()
 
     try:
         manager: Manager = Manager(
-            settings_path=get_absolute_path(args.settings))
+            settings_path=get_absolute_path(args.settings),
+            app_filter=args.app)
     except Exception as e:
         logging.error(f"Failed to initialize Manager: {e}", exc_info=True)
         sys.exit(1)

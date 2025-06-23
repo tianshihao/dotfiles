@@ -15,7 +15,7 @@ from .utils import make_ignore_function
 class Worker:
     """Handle configuration synchronization tasks."""
 
-    def __init__(self, settings_path: str) -> None:
+    def __init__(self, settings_path: str, app_filter: list[str] | None = None) -> None:
         loader: Loader = Loader()
         # validator: Validator = Validator()
         parser: Parser = Parser()
@@ -23,6 +23,7 @@ class Worker:
         json_obj: JsonObject = loader.load(settings_path)
         # validator.validate(settings)
         self._settings: Settings = parser.parse(json_obj)
+        self._app_filter: list[str] | None = app_filter
 
         self._action_map: dict[
             ActionDesc,
@@ -60,7 +61,12 @@ class Worker:
 
         operation_func, (src_getter, dst_getter,
                          excludes_getter) = self._action_map[action_desc]
+
         all_configs_view = self._settings.all_configs_view
+        if self._app_filter:
+            all_configs_view = [
+                (cfg, app) for (cfg, app) in all_configs_view if app.name in self._app_filter
+            ]
         total_configs = len(all_configs_view)
         logging.info(
             f"{action_desc.value}: {total_configs} configurations to process.")

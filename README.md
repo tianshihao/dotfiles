@@ -17,6 +17,10 @@ Dotfiles Manager is a Python tool for syncing your dotfiles across Linux, macOS,
 
    ```bash
    python3 -m src.main --overview
+   # for a specified app(e.g. nvim)
+   python3 -m src.main --overview --app nvim
+   # for multiple apps(e.g. nvim, vim)
+   python3 -m src.main --overview --app nvim vim
    ```
 
    Shows what will be copied, which items are enabled, and the paths for your system.
@@ -25,12 +29,20 @@ Dotfiles Manager is a Python tool for syncing your dotfiles across Linux, macOS,
 
    ```bash
    python3 -m src.main --retrieve
+   # for a specific app
+   python3 -m src.main --retrieve --app nvim
+   # for multiple apps
+   python3 -m src.main --retrieve --app nvim vim
    ```
 
 4. **Copy files from the repo to your computer**
 
    ```bash
    python3 -m src.main --dispatch
+   # for a specific app
+   python3 -m src.main --dispatch --app nvim
+   # for multiple apps
+   python3 -m src.main --dispatch --app nvim vim
    ```
 
 5. **Show help**
@@ -105,6 +117,7 @@ You list your programs in `settings.json`. Each program can have many items. Eac
 - Use lowercase for system keys.
 - Use `excludes` to skip files or folders.
 - Set `enable: false` to skip a program or a system.
+- **Use `--app <name1> <name2> ...` to operate on one or more specific applications (e.g. nvim, vim, kitty, etc).**
 
 ---
 
