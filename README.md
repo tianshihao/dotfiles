@@ -160,3 +160,24 @@ npx commitizen init cz-emoji-conventional --save-dev --save-exact --force
    ```bash
    npx commitizen
    ```
+
+---
+
+## Changelog with Emoji Commits
+
+If you use cz-emoji-conventional (emoji commit style), use the following method to generate a changelog that recognizes emoji commits:
+
+1. Install the tools (globally or with npx):
+   ```bash
+   npm install -g conventional-changelog-cli conventional-changelog-emoji
+   # or just use npx without global install
+   # npx conventional-changelog -p emoji -i CHANGELOG.md -s
+   ```
+2. Generate or update your changelog:
+   ```bash
+   npx conventional-changelog -p emoji -i CHANGELOG.md -s -r 0
+   ```
+
+This will parse your cz-emoji-conventional commit messages and generate a changelog with emoji support.
+
+If your changelog is empty, make sure your commit messages follow the emoji conventional format (e.g. `✨ feat: ...`).
