@@ -22,8 +22,7 @@ set hlsearch
 " ==============================================================================
 " Set font
 " ==============================================================================
-" set guifont=Fira_Code:h14,sarasa_term_sc_nerd:h14
-set guifont=sarasa_term_sc_nerd:h14
+set guifont=fira_code:h14,sarasa_term_sc:h14
 
 " ==============================================================================
 " Set <LEADER>.
@@ -56,11 +55,10 @@ noremap <C-n> :nohl<CR>
 " ==============================================================================
 " Accelarate typing.
 " ==============================================================================
-inoremap <C-e> `
-inoremap <C-r> _ " Not work.
+" inoremap <C-e> `
 " inoremap <C-m> =
-inoremap <C-j> <Enter>
-inoremap <C-k> <Esc>O
+" inoremap <C-j> <Enter>
+" inoremap <C-k> <Esc>O
 
 " ==============================================================================
 " Vimilize.
@@ -100,3 +98,7 @@ nnoremap <LEADER>tb :call ToggleBoolean()<CR>
 runtim! ftplugin/man.vim
 
 set clipboard=unnamedplus
+
+nnoremap <C-r> "
+xnoremap <C-r> "
+vnoremap <C-r> "
