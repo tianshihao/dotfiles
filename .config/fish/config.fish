@@ -39,16 +39,16 @@ function fish_mode_prompt
     switch $fish_bind_mode
         case default
             set_color A9FFF7
-            echo -n '[🔒] '
+            echo -n '[🆗] '
         case insert
             set_color FF495C
-            echo -n '[📇] '
+            echo -n '[️📇] '
         case replace
             set_color yellow
-            echo -n '[📝️] '
+            echo -n '[🧹] '
         case replace_one
             set_color cyan
-            echo -n '[✏️] '
+            echo -n '[📝️] '
         case visual
             set_color F3C5C5
             echo -n '[👀] '
