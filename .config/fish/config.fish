@@ -1,8 +1,58 @@
 # ~/.config/fish/config.fish
 
+# function fish_greeting
+#    echo [🌠] Welcome back friend!
+#    echo [🌠] The time is (set_color yellow; date "+%Y-%m-%d %A %T"; set_color normal) and this machine is called $hostname
+# end
+
 function fish_greeting
-   echo Welcome back friend!
-   echo The time is (set_color yellow; date +%T; set_color normal) and this machine is called $hostname
+    set_color cyan
+    echo -n '['
+    set_color normal
+    echo -n '🌠'
+    set_color cyan
+    echo -n '] '
+    set_color normal
+    echo -n "Welcome back "
+    set_color 0067A5
+    echo "$USER"
+    set_color normal
+
+    set_color cyan
+    echo -n '['
+    set_color normal
+    echo -n '🌠'
+    set_color cyan
+    echo -n '] '
+    set_color normal
+    echo -n "The time is "
+    set_color yellow
+    echo -n (date "+%Y-%m-%d %A %T")
+    set_color normal
+    echo -n " and this machine is called "
+    set_color green
+    echo $hostname
+    set_color normal
+end
+
+function fish_mode_prompt
+    switch $fish_bind_mode
+        case default
+            set_color A9FFF7
+            echo -n '[🔒] '
+        case insert
+            set_color FF495C
+            echo -n '[📇] '
+        case replace
+            set_color yellow
+            echo -n '[📝️] '
+        case replace_one
+            set_color cyan
+            echo -n '[✏️] '
+        case visual
+            set_color F3C5C5
+            echo -n '[👀] '
+    end
 end
 
 # shell
