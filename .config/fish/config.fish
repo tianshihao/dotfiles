@@ -55,6 +55,11 @@ function fish_mode_prompt
     end
 end
 
+set fish_cursor_default block
+set fish_cursor_insert underscore
+set fish_cursor_replace underscore
+set fish_cursor_visual underscore
+
 # shell
 abbr --add c clear
 abbr --add e exit
