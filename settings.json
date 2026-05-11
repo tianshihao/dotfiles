@@ -93,12 +93,12 @@
           ],
           "darwin": {
             "path_on_host": "~/Library/Application Support/lazygit"
+          },
+          "windows": {
+            "path_on_host": "%LOCALAPPDATA%/lazygit"
           }
         }
-      ],
-      "windows": {
-        "enable": false
-      }
+      ]
     },
     {
       "name": "karabiner",
