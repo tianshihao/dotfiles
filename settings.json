@@ -158,15 +158,12 @@
         {
           "type": "directory",
           "path_on_host": "~/.config/nvim",
-          "path_in_repo": ".config/nvim"
+          "path_in_repo": ".config/nvim",
+          "windows": {
+            "path_on_host": "%LOCALAPPDATA%/nvim"
+          }
         }
-      ],
-      "windows": {
-        "enable": false
-      },
-      "darwin": {
-        "enable": false
-      }
+      ]
     }
   ]
 }
