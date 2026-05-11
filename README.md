@@ -138,7 +138,14 @@ sudo apt install -y nodejs npm
 
 #### 2. If Node.js and npm are already installed
 
-In the dotfiles repo directory:
+Recommended: Install Commitizen globally so you can use `git cz` anywhere:
+
+```bash
+npm install -g commitizen
+commitizen init cz-emoji-conventional --save-dev --save-exact --force
+```
+
+Or, if you prefer local install (use `npx cz`):
 
 ```bash
 npm install --save-dev commitizen
@@ -153,13 +160,13 @@ npx commitizen init cz-emoji-conventional --save-dev --save-exact --force
    npm install
    ```
 3. Use Commitizen to commit:
-   ```bash
-   npx cz
-   ```
-   or
-   ```bash
-   npx commitizen
-   ```
+  ```bash
+  git cz
+  ```
+  or (if not installed globally)
+  ```bash
+  npx cz
+  ```
 
 ---
 
