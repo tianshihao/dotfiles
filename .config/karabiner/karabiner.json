@@ -4,7 +4,7 @@
             "complex_modifications": {
                 "rules": [
                     {
-                        "description": "Shihao Tian's personal rules",
+                        "description": "My Custom Rules",
                         "manipulators": [
                             {
                                 "from": {
@@ -57,21 +57,26 @@
                             },
                             {
                                 "from": {
-                                    "key_code": "c",
-                                    "modifiers": {
-                                        "mandatory": ["left_control"],
-                                        "optional": ["any"]
-                                    }
+                                    "key_code": "a",
+                                    "modifiers": { "mandatory": ["right_command"] }
                                 },
-                                "to": [{ "key_code": "escape" }],
+                                "to": [
+                                    {
+                                        "key_code": "equal_sign",
+                                        "modifiers": ["left_shift"]
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "from": {
-                                    "key_code": "a",
-                                    "modifiers": { "mandatory": ["right_command"] }
+                                    "key_code": "b",
+                                    "modifiers": {
+                                        "mandatory": ["right_command"],
+                                        "optional": ["any"]
+                                    }
                                 },
-                                "to": [{ "key_code": "keypad_plus" }],
+                                "to": [{ "key_code": "backslash" }],
                                 "type": "basic"
                             },
                             {
@@ -302,12 +307,7 @@
                                 },
                                 "to": [{ "key_code": "page_down" }],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Change right_command+hjkl to arrow keys",
-                        "manipulators": [
+                            },
                             {
                                 "from": {
                                     "key_code": "h",
