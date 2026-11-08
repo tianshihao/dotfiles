@@ -10,8 +10,17 @@ Dotfiles Manager is a Python tool for syncing your dotfiles across Linux, macOS,
 
 1. **Get ready**
 
-   - Needs Python 3.
+   - Use Python 3.13 for this project.
+   - Create and activate a virtual environment in the repo:
+      ```bash
+      rm -rf .venv
+      python3.13 -m venv .venv
+      source .venv/bin/activate
+      python --version
+      python3 --version
+      ```
    - Clone this repo and edit `settings.json` as you like.
+   - The commands below assume the virtual environment is activated.
 
 2. **See what will be copied**
 

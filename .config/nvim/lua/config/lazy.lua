@@ -11,10 +11,14 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   spec = {
     {
+      "nvim-tree/nvim-web-devicons",
+      lazy = true,
+    },
+    {
       "folke/which-key.nvim",
       config = function()
         local wk = require("which-key")
-        wk.setup{}
+        wk.setup {}
         wk.register({
           t = {
             name = "+Telekasten",
@@ -24,7 +28,7 @@ require("lazy").setup({
             n = { '<cmd>lua require("telekasten").find_daily_notes()<CR>', "Find daily notes" },
             g = { '<cmd>lua require("telekasten").show_tags()<CR>', "Show tags panel" },
           },
-        }, { prefix = '<leader>' })
+        }, { prefix = "<leader>" })
       end,
     },
     {
@@ -40,7 +44,7 @@ require("lazy").setup({
       "nvim-telescope/telescope.nvim",
       dependencies = { "nvim-lua/plenary.nvim" },
       config = function()
-        require("telescope").setup{}
+        require("telescope").setup {}
       end,
     },
     {
@@ -108,7 +112,9 @@ require("lazy").setup({
 								-- 只在此平台指向 im-select.exe 完整路径（不必加入 PATH）
 								opts.default_command = "C:\\Users\\shihao.tian\\im-select.exe"
 						elseif is_mac then
-								-- macOS 用默认 macism，无需 default_command
+								opts.default_command = "im-select"
+								opts.set_default_events = { "InsertLeave", "CmdlineLeave", "FocusGained" }
+								opts.async_switch_im_wait = 100
 								opts.default_im_select = "com.apple.keylayout.ABC"
 						else
 								-- Linux 用默认 fcitx5-remote / fcitx-remote / ibus
