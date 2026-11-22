@@ -1,8 +1,16 @@
 # ~/.config/fish/config.fish
 
 function fish_greeting
-   echo "Welcome back, $(set_color --bold ff9847)@$USER$(set_color normal)!"
-   echo The time is (set_color yellow; date +%T; set_color normal) and this machine is called $hostname
+   set -l user_color "$(set_color --bold f4ff32)"
+   set -l host_color "$(set_color --bold ff70c8)"
+   set -l time_color "$(set_color --bold 82cfff)"
+   set -l weekday_color "$(set_color --bold 76e6af)"
+   set -l normal "$(set_color normal)"
+   set -l calendar (date '+%F %T%n%A')
+   printf 'Welcome back, %s@%s%s!\n' "$user_color" "$USER" "$normal"
+   printf 'It is %s%s%s %s(%s)%s and this machine is called %s[%s]%s\n' \
+       "$time_color" "$calendar[1]" "$normal" "$weekday_color" "$calendar[2]" "$normal" \
+       "$host_color" "$hostname" "$normal"
 end
 
 # shell
