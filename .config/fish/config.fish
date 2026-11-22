@@ -6,7 +6,7 @@ function fish_greeting
    set -l time_color "$(set_color --bold 82cfff)"
    set -l weekday_color "$(set_color --bold 76e6af)"
    set -l normal "$(set_color normal)"
-   set -l calendar (date '+%F %T%n%A')
+   set -l calendar (LC_ALL=C date '+%F %T%n%A')
    printf 'Welcome back, %s@%s%s!\n' "$user_color" "$USER" "$normal"
    printf 'It is %s%s%s %s(%s)%s and this machine is called %s[%s]%s\n' \
        "$time_color" "$calendar[1]" "$normal" "$weekday_color" "$calendar[2]" "$normal" \
