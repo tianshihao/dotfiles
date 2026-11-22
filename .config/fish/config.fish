@@ -1,7 +1,7 @@
 # ~/.config/fish/config.fish
 
 function fish_greeting
-   echo Welcome back friend!
+   echo "Welcome back, $(set_color --bold ff9847)@$USER$(set_color normal)!"
    echo The time is (set_color yellow; date +%T; set_color normal) and this machine is called $hostname
 end
 
