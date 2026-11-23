@@ -54,6 +54,20 @@ require("lazy").setup({
         })
       end,
     },
+    {
+      "keaising/im-select.nvim",
+      config = function()
+          require('im_select').setup({
+            default_im_select       = "com.apple.keylayout.ABC",
+            default_command         = "im-select",
+            set_default_events      = { "InsertLeave", "FocusGained" },
+            set_previous_events     = { "InsertEnter" },
+            keep_quiet_on_no_binary = false,
+            async_switch_im         = true,
+            async_switch_im_wait    = 100, -- 增加延迟，单位毫秒
+          })
+      end,
+    },
 		{
 				"toppair/peek.nvim",
 				event = { "VeryLazy" },
@@ -91,38 +105,6 @@ require("lazy").setup({
         })
       end,
     },
-		{
-				"keaising/im-select.nvim",
-				config = function()
-						local is_windows = vim.fn.has("win32") == 1
-						local is_mac     = vim.fn.has("macunix") == 1
-
-						local opts = {
-								set_default_events = { "InsertLeave", "CmdlineLeave" },
-								set_previous_events = { "InsertEnter" },
-								keep_quiet_on_no_binary = false,
-								async_switch_im = true,
-						}
-
-						if is_windows then
-								-- Windows 英文键盘 = 1033
-								opts.default_im_select = "1033"
-								-- 只在此平台指向 im-select.exe 完整路径（不必加入 PATH）
-								opts.default_command = "C:\\Users\\shihao.tian\\im-select.exe"
-						elseif is_mac then
-								opts.default_command = "im-select"
-								opts.set_default_events = { "InsertLeave", "CmdlineLeave", "FocusGained" }
-								opts.async_switch_im_wait = 100
-								opts.default_im_select = "com.apple.keylayout.ABC"
-						else
-								-- Linux 用默认 fcitx5-remote / fcitx-remote / ibus
-								opts.default_im_select = "xkb:us::eng" -- ibus
-						end
-
-						require("im_select").setup(opts)
-				end,
-		}
-
   },
   install = { colorscheme = { "night-owl" } },
   checker = { enabled = false },
