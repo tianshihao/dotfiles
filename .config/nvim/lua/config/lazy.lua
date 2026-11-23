@@ -19,16 +19,14 @@ require("lazy").setup({
       config = function()
         local wk = require("which-key")
         wk.setup {}
-        wk.register({
-          t = {
-            name = "+Telekasten",
-            f = { '<cmd>lua require("telekasten").search_notes()<CR>', "Search in notes" },
-            p = { '<cmd>lua require("telekasten").panel()<CR>', "Panel/Palette" },
-            t = { '<cmd>lua require("telekasten").goto_today()<CR>', "Goto today" },
-            n = { '<cmd>lua require("telekasten").find_daily_notes()<CR>', "Find daily notes" },
-            g = { '<cmd>lua require("telekasten").show_tags()<CR>', "Show tags panel" },
-          },
-        }, { prefix = "<leader>" })
+        wk.add({
+          { "<leader>t", group = "Telekasten" },
+          { "<leader>tf", '<cmd>lua require("telekasten").search_notes()<CR>', desc = "Search in notes" },
+          { "<leader>tp", '<cmd>lua require("telekasten").panel()<CR>', desc = "Panel/Palette" },
+          { "<leader>tt", '<cmd>lua require("telekasten").goto_today()<CR>', desc = "Goto today" },
+          { "<leader>tn", '<cmd>lua require("telekasten").find_daily_notes()<CR>', desc = "Find daily notes" },
+          { "<leader>tg", '<cmd>lua require("telekasten").show_tags()<CR>', desc = "Show tags panel" },
+        })
       end,
     },
     {
