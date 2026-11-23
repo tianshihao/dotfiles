@@ -15,6 +15,10 @@ require("lazy").setup({
       lazy = true,
     },
     {
+      "echasnovski/mini.icons",
+      lazy = true,
+    },
+    {
       "folke/which-key.nvim",
       config = function()
         local wk = require("which-key")
@@ -35,6 +39,24 @@ require("lazy").setup({
       priority = 1000,
       config = function()
         require("night-owl").setup()
+        vim.api.nvim_create_autocmd("ColorScheme", {
+          group = vim.api.nvim_create_augroup("NightOwlMarkdownHeadings", { clear = true }),
+          pattern = "night-owl",
+          callback = function()
+            local backgrounds = { "#24435c", "#382f50", "#203e36", "#413822", "#432e30", "#153842" }
+            local foregrounds = { "Title", "Keyword", "DiagnosticOk", "DiagnosticWarn", "Number", "DiagnosticInfo" }
+            for level, background in ipairs(backgrounds) do
+              vim.api.nvim_set_hl(0, "RenderMarkdownH" .. level, { link = foregrounds[level] })
+              local style = { bg = background }
+              if level == 1 then
+                style.underline = true
+                style.overline = true
+                style.sp = "#6589a3"
+              end
+              vim.api.nvim_set_hl(0, "RenderMarkdownH" .. level .. "Bg", style)
+            end
+          end,
+        })
         vim.cmd.colorscheme("night-owl")
       end,
     },
@@ -68,42 +90,25 @@ require("lazy").setup({
           })
       end,
     },
-		{
-				"toppair/peek.nvim",
-				event = { "VeryLazy" },
-				config = function()
-						require("peek").setup()
-						vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
-						vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
-				end,
-		},
     {
-      'nvim-treesitter/nvim-treesitter',
-      lazy = false,
-      build = ':TSUpdate',
-      config = function()
-        require("nvim-treesitter").setup({
-          ensure_installed = { "markdown", "markdown_inline", "lua", "vim", "vimdoc" },
-          auto_install = true,
-        })
-      end,
-    },
-    {
-      'MeanderingProgrammer/render-markdown.nvim',
-      dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },
-      ft = { "markdown", "telekasten" },   -- telekasten 笔记也是 markdown，必须一起加载
-      config = function()
-        -- 先 setup mini.icons，render-markdown 才能拿到图标
-        require("mini.icons").setup()
-        -- 让 treesitter 把 telekasten 文件当 markdown 解析，render 才有 parser 可用
+      "MeanderingProgrammer/render-markdown.nvim",
+      ft = { "markdown", "telekasten" },
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+      init = function()
         vim.treesitter.language.register("markdown", "telekasten")
-        require("render-markdown").setup({
-          heading = { enabled = true },
-          code = { enabled = true },
-          checkbox = { enabled = true },
-          table = { enabled = true },
-        })
       end,
+      opts = {
+        render_modes = { "n", "c", "t", "i" },
+        anti_conceal = { ignore = { head_background = true } },
+        heading = {
+          icons = { "▌ ", "▌▌ ", "▌▌▌ ", "▌▌▌▌ ", "▌▌▌▌▌ ", "▌▌▌▌▌▌ " },
+          position = "inline",
+          sign = false,
+          width = "full",
+          left_pad = { 0, 2, 4, 6, 8, 10 },
+        },
+        custom_handlers = { markdown = require("config.markdown_heading_details") },
+      },
     },
   },
   install = { colorscheme = { "night-owl" } },
